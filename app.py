@@ -25,7 +25,7 @@ class ArgumentParser(argparse.ArgumentParser):
     def error(self, message):
         exc = sys.exc_info()[1]
         if exc:
-            exc.argument = self._get_action_from_name(exc.argument_name)
+            # exc.argument = self._get_action_from_name(exc.argument_name)
             raise exc
         super(ArgumentParser, self).error(message)
 
