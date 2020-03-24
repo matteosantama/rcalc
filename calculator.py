@@ -53,8 +53,14 @@ class Calculator:
         df['rolling_mean'] = df[self.contract].expanding().mean()
         df['fut_price'] = 100 - df['rolling_mean']
 
+        # store dataframe as property for later access
         self.df = df
 
+
+    def compute_futures_price(self) -> str:
+        price = 100 - self.df[self.contract].mean()
+        base = 0.0025
+        return f'{base * round(price / base):.4f}'
 
 
 if __name__ == "__main__":

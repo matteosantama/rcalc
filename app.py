@@ -49,7 +49,7 @@ def receive_request():
 
     if args.verbose:
         return 'must return'
-    return 100 - calculator.df[args.rate].mean()
+    return f'current futures price={calculator.compute_futures_price()}'
 
 
 
