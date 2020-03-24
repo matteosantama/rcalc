@@ -1,10 +1,11 @@
 import argparse
 import sys
 
+
 class ArgumentParser(argparse.ArgumentParser):
     """
     Custom implementation of argparse module that supports raising exceptions
-    on errors
+    on errors instead of just silently exiting
     """
 
     def error(self, message):

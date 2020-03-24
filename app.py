@@ -3,6 +3,7 @@ from slack import WebClient
 import json
 import os
 import argparser
+import argparse
 
 
 # configure slack client by loading token from environment
@@ -21,7 +22,7 @@ def receive_request():
 
     try:
         args = parser.parse_args(request.form['text'].split(' '))
-    except argparse.ArgumentError as err:
+    except argparser.ArgumentError as err:
         print(err)
         print('here')
         return 'errored'
