@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request
 from slack import WebClient
 import json
 import os
 import sys
 import argparse
-
+from calculator import Calculator
 
 
 # configure slack client by loading token from environment
@@ -25,7 +25,6 @@ class ArgumentParser(argparse.ArgumentParser):
     def error(self, message):
         exc = sys.exc_info()[1]
         if exc:
-            # exc.argument = self._get_action_from_name(exc.argument_name)
             raise exc
         super(ArgumentParser, self).error(message)
 
@@ -37,16 +36,15 @@ def receive_request():
 
     parser.add_argument('rate', choices=['zq', 'sr1'], help='Specify whether to use zq or sr1')
 
+    # try to parse args, return failure string if unable to
     try:
         args = parser.parse_args(request.form['text'].split(' '))
     except argparse.ArgumentError as err:
-        print(err)
-        print('here')
-        return 'errored'
+        return err
 
-    print(request.form)
+    calculator = Calculator(args.rate)
 
-    return 'no errors??'
+    return calculator.endpoint
 
 
 
