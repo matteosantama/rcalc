@@ -1,8 +1,7 @@
-from flask import Flask, request, make_response, Response
+from flask import Flask, request, jsonify, Response
 from slack import WebClient
 import json
 import os
-import requests
 
 
 # configure slack client for handling requests
@@ -15,13 +14,18 @@ app = Flask(__name__)
 
 @app.route('/slack/calculate', methods=['POST'])
 def calculate():
+    print('here we are')
+
     # parse the request payload
     form_json = json.loads(request.form["payload"])
 
-    print(form_json)
+    print('here!')
     # return Response(json.dumps(form_json), mimetype='application/json')
     
-    requests.post('https://hooks.slack.com/services/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', data=form_json)
+    return jsonify(
+        response_type='in_channel',
+        text='<https://youtu.be/frszEJb0aOo|General Kenobi!>',
+    )
 
 
 # start the Flask server
