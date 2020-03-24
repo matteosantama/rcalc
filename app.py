@@ -25,6 +25,7 @@ class ArgumentParser(argparse.ArgumentParser):
     def error(self, message):
         exc = sys.exc_info()[1]
         if exc:
+            exc.user_message = message
             raise exc
         super(ArgumentParser, self).error(message)
 
@@ -40,7 +41,7 @@ def receive_request():
     try:
         args = parser.parse_args(request.form['text'].split(' '))
     except argparse.ArgumentError as err:
-        return err
+        return err.user_message
 
     calculator = Calculator(args.rate)
 
