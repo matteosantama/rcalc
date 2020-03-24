@@ -19,8 +19,11 @@ def receive_request():
 
     parser.add_argument('rate', choices=['zq', 'sr1'], help='Specify whether to use zq or sr1')
 
-
-    args = parser.parse_args(request.form['text'].split(' '))
+    try:
+        args = parser.parse_args(request.form['text'].split(' '))
+    except argparse.ArgumentError as err:
+        print(err)
+        return err
 
 
     print(request.form)
