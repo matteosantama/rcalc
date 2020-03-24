@@ -5,7 +5,7 @@ import json
 
 
 # configure slack client for handling requests
-SLACK_BOT_TOKEN = 'xoxb-48807595170-1022627940005-mQDzRox1eii8glzsRNnlshoY'
+SLACK_BOT_TOKEN = 'todo'
 slack_client = WebClient(SLACK_BOT_TOKEN)
 
 # Flask webserver for incoming traffic from Slack
