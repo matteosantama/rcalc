@@ -16,8 +16,8 @@ app = Flask(__name__)
 def calculate():
     print('here we are')
 
-    print(request.form["payload"])
-    
+    print(request)
+
     # parse the request payload
     form_json = json.loads(request.form["payload"])
 
