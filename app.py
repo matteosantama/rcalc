@@ -2,6 +2,7 @@ from flask import Flask, request, make_response, Response
 from slack import WebClient
 import json
 import os
+import requests
 
 
 # configure slack client for handling requests
@@ -17,8 +18,10 @@ def calculate():
     # parse the request payload
     form_json = json.loads(request.form["payload"])
 
+    print(form_json)
     # return Response(json.dumps(form_json), mimetype='application/json')
-    return 'simple plain response'
+    
+    requests.post('https://hooks.slack.com/services/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', data=form_json)
 
 
 # start the Flask server
