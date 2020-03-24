@@ -33,7 +33,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
 @app.route('/slack/calculate', methods=['POST'])
 def receive_request():
-    parser = argparse.ArgumentParser(description='Short-term lending calculator', prog='rcalc')
+    parser = ArgumentParser(description='Short-term lending calculator', prog='rcalc')
 
     parser.add_argument('rate', choices=['zq', 'sr1'], help='Specify whether to use zq or sr1')
 
@@ -44,10 +44,10 @@ def receive_request():
         print('here')
         return 'errored'
 
-
     print(request.form)
 
     return 'no errors??'
+
 
 
 # start the Flask server
