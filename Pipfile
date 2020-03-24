@@ -11,6 +11,7 @@ slackclient = "*"
 flask = "*"
 gunicorn = "*"
 datetime = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

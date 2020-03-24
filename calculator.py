@@ -1,5 +1,7 @@
 import pandas as pd
 import datetime as dt
+import requests
+from xml.etree import ElementTree
 
 
 class Calculator:
@@ -9,18 +11,52 @@ class Calculator:
     """
 
     ENDPOINTS = {
-        'sr1': """https://websvcgatewayx2.frbny.org/mktrates_external_httponly\
-        /services/v1_0/mktRates/xml/retrieve?typ=RATE&f={}&t={}""",
-        'zq': """https://websvcgatewayx2.frbny.org/autorates_fedfunds_external\
-        /services/v1_0/fedfunds/xml/retrieve?typ=RATE&f={}&t={}"""
+        'sr1': 'https://websvcgatewayx2.frbny.org/mktrates_external_httponly/services/v1_0/mktRates/xml/retrieve?typ=RATE&f={}&t={}',
+        'zq': 'https://websvcgatewayx2.frbny.org/autorates_fedfunds_external/services/v1_0/fedfunds/xml/retrieve?typ=RATE&f={}&t={}'
     }
 
+
     def __init__(self, contract):
-        today = dt.datetime.today()
-        first_of_the_month = today.replace(day=1)
+        self.contract = contract
+        self.df = None  # will get populated by self.query_data()
+
+
+    def query_data(self):
+        yesterday = dt.datetime.today() - dt.timedelta(days=1)
+        week_into_prev_month = yesterday.replace(day=1) - dt.timedelta(days=7)
         datefmt = '%m%d%Y'
 
-        self.endpoint = Calculator.ENDPOINTS[contract].format(
-            first_of_the_month.strftime(datefmt),
-            today.strftime(datefmt)
+        # format endpoint given contract type and dates to query
+        endpoint = Calculator.ENDPOINTS[self.contract].format(
+            week_into_prev_month.strftime(datefmt),
+            yesterday.strftime(datefmt)
         )
+        response = requests.get(endpoint)
+
+        # find and parse rate date from XML feed
+        tree = ElementTree.fromstring(response.content)
+        dataset = tree.find('{http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message}DataSet')
+        series = dataset.find("./Series[@FUNDRATE_OBS_POINT='50%']")
+        data = dict()
+        for obs in series.iter('Obs'):
+            data[obs.attrib['TIME_PERIOD']] = float(obs.attrib['OBS_VALUE'])
+
+        # construct df and fill missing days
+        df = pd.DataFrame.from_dict(data, orient='index', columns=[self.contract])
+        df.index = pd.DatetimeIndex(df.index)
+        df = df.reindex(pd.date_range(
+            start=yesterday.replace(day=1), 
+            end=yesterday, 
+            freq='D'), method='bfill')
+
+        # compute rolling mean and implied futures price
+        df['rolling_mean'] = df[self.contract].expanding().mean()
+        df['fut_price'] = 100 - df['rolling_mean']
+
+        self.df = df
+
+
+
+if __name__ == "__main__":
+    calc = Calculator('zq')
+    calc.query_data()
