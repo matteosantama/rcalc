@@ -6,7 +6,7 @@ import os
 
 # configure slack client for handling requests
 SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
-slack_client = WebClient(SLACK_BOT_TOKEN)
+slack_client = WebClient(token=SLACK_BOT_TOKEN)
 
 # Flask webserver for incoming traffic from Slack
 app = Flask(__name__)
@@ -17,7 +17,8 @@ def calculate():
     # parse the request payload
     form_json = json.loads(request.form["payload"])
 
-    return Response(json.dumps(form_json), mimetype='application/json')
+    # return Response(json.dumps(form_json), mimetype='application/json')
+    return 'simple plain response'
 
 
 # start the Flask server
