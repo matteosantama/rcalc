@@ -20,7 +20,7 @@ class Calculator:
         first_of_the_month = today.replace(day=1)
         datefmt = '%m%d%Y'
 
-        self.endpoint = Calculator.ENDPONTS[contract].format(
+        self.endpoint = Calculator.ENDPOINTS[contract].format(
             first_of_the_month.strftime(datefmt),
             today.strftime(datefmt)
         )
