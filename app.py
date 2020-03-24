@@ -16,18 +16,20 @@ app = Flask(__name__)
 def calculate():
     print('here we are')
 
-    print(request)
+    print(request.form)
+
+    return 'no errors??'
 
     # parse the request payload
-    form_json = json.loads(request.form["payload"])
+    # form_json = json.loads(request.form["payload"])
 
-    print('here!')
+    # print('here!')
     # return Response(json.dumps(form_json), mimetype='application/json')
     
-    return jsonify(
-        response_type='in_channel',
-        text='<https://youtu.be/frszEJb0aOo|General Kenobi!>',
-    )
+    # return jsonify(
+    #     response_type='in_channel',
+    #     text='<https://youtu.be/frszEJb0aOo|General Kenobi!>',
+    # )
 
 
 # start the Flask server
