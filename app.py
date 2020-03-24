@@ -17,9 +17,10 @@ app = Flask(__name__)
 def receive_request():
     parser = argparse.ArgumentParser(description='Short-term lending calculator', prog='rcalc')
 
-    parser.add_argument('rate', choices=['zq', 'sr1'], required=True)
+    parser.add_argument('rate', choices=['zq', 'sr1'], help='Specify whether to use zq or sr1')
 
-    args = parser.parse_args(request.form['text'])
+
+    args = parser.parse_args(request.form['text'].split(' '))
 
 
     print(request.form)
