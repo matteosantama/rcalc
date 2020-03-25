@@ -30,9 +30,7 @@ class ArgumentParser(argparse.ArgumentParser):
         #     print('raising')
         #     raise exc
         # super(ArgumentParser, self).error(message)
-        err = argparse.ArgumentError()
-        err.msg = message
-        raise err
+        raise argparse.ArgumentError(None, message)
 
 
 
