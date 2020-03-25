@@ -4,6 +4,7 @@ import os
 import argparse
 import datetime as dt
 from calculator import Calculator
+from pprint import pformat
 
 
 # configure slack client by loading token from environment
@@ -62,21 +63,23 @@ def receive_request():
     calculator = Calculator(args.symbol)
 
     if args.verbose:
-        return '.' + calculator.df.to_string()
+        return '.' + calculator.df.to_string(justify='right')
     
     response = dict()
     response['current futures price'] = calculator.compute_futures_price()
 
     if args.rate:
+        response['submitted rate'] = args.rate
         response['price with rate'] = calculator.find_price_with_rate(args.rate)
     if args.target:
+        response['submitted price'] = args.target
         response['rate needed'] = calculator.find_rate_with_price(args.target)
 
     # Heroku is configured to America/New York tz
-    if dt.datetime.now().time() < dt.time(hour=12):
+    if dt.datetime.now().time() < dt.time(hour=16):
         response['WARNING'] = 'Upcoming data release at 8am Central'
 
-    return jsonify(response)
+    return pformat(response)
 
 
 # start the Flask server
