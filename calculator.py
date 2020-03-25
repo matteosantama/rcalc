@@ -67,7 +67,7 @@ class Calculator:
         complete_idx = pd.date_range(start=first, periods=first.days_in_month, freq='D')
         df = self.df[self.contract].reindex(index=complete_idx, fill_value=rate)
 
-        return Calculator._format_from_rate(df.mean())
+        return Calculator._format_from_rate(df.mean(), offical=False)
 
     
     def find_rate_with_price(self, price: float) -> str:
@@ -84,8 +84,8 @@ class Calculator:
         return f'{req_rate:.5f}'
 
 
-    def compute_futures_price(self) -> str:
-        return Calculator._format_from_rate(self.df[self.contract].mean())
+    def compute_futures_price(self, official=True) -> str:
+        return Calculator._format_from_rate(self.df[self.contract].mean(), official)
 
     
     @staticmethod
