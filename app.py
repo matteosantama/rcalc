@@ -23,21 +23,15 @@ class ArgumentParser(argparse.ArgumentParser):
     """
 
     def error(self, message):
-        # exc = sys.exc_info()[1]
-        # print('erroring')
-        # if exc:
-        #     exc.user_message = message
-        #     print('raising')
-        #     raise exc
-        # super(ArgumentParser, self).error(message)
         raise argparse.ArgumentError(None, message)
 
 
 
 @app.route('/slack/calculate', methods=['POST'])
 def receive_request():
-    parser = ArgumentParser(description='Short-term lending rate calculator', prog='rcalc')
+    parser = ArgumentParser(description='Short-term lending rate calculator', prog='rcalc', add_help=False)
 
+    parser.add_argument('-h', '--help', action='store_true', dest='help')
     parser.add_argument('rate', choices=['zq', 'sr1'], help='Specify whether to use zq or sr1')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', help='Use this flag to print rates dataframe')
 
@@ -46,6 +40,9 @@ def receive_request():
         args = parser.parse_args(request.form['text'].split(' '))
     except argparse.ArgumentError as err:
         return err.message
+
+    if args.help:
+        return parser.format_help()
 
     calculator = Calculator(args.rate)
     calculator.query_data()
