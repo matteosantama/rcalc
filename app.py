@@ -23,13 +23,14 @@ class ArgumentParser(argparse.ArgumentParser):
     """
 
     def error(self, message):
-        exc = sys.exc_info()[1]
-        print('erroring')
-        if exc:
-            exc.user_message = message
-            print('raising')
-            raise exc
-        super(ArgumentParser, self).error(message)
+        # exc = sys.exc_info()[1]
+        # print('erroring')
+        # if exc:
+        #     exc.user_message = message
+        #     print('raising')
+        #     raise exc
+        # super(ArgumentParser, self).error(message)
+        raise argparse.ArgumentError(msg=message)
 
 
 
@@ -44,7 +45,7 @@ def receive_request():
     try:
         args = parser.parse_args(request.form['text'].split(' '))
     except argparse.ArgumentError as err:
-        return err.user_message
+        return err.msg
 
     calculator = Calculator(args.rate)
     calculator.query_data()
