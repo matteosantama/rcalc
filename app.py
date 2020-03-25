@@ -29,7 +29,10 @@ class ArgumentParser(argparse.ArgumentParser):
 def receive_request():
     
     parser = ArgumentParser(
-        description='Short-term lending rate calculator', prog='rcalc', add_help=False
+        description=("Short-term lending rate calculator. ") + 
+        ("Note that settlments are precise to 3 decimal places, but front month ") +
+        ("futures are quoted to 4 decimal places. Hence, the offical vs. exact settlement values"), 
+        prog='rcalc', add_help=False
     )
     group = parser.add_mutually_exclusive_group()
     
