@@ -53,8 +53,8 @@ class Calculator:
         df.index = df.index.normalize().rename('date')
 
         # compute rolling mean and implied futures price
-        df['rolling_mean'] = df[contract].expanding().mean()
-        df['fut_price'] = 100 - df['rolling_mean']
+        df['expanding_mean'] = df[contract].expanding().mean()
+        df['fut_price'] = 100 - df['expanding_mean']
 
         return df
 
@@ -89,10 +89,11 @@ class Calculator:
 
     
     @staticmethod
-    def _format_from_rate(avg_daily_rate) -> str:
+    def _format_from_rate(avg_daily_rate, offical=True) -> str:
         """
         round and format a futures price to 4 decimals
         """
+        places = 3 if offical else 4
         settlement = 100 - round(avg_daily_rate, 3)
         return f'{settlement:.4f}'
 
