@@ -43,7 +43,7 @@ def receive_request():
     try:
         args = parser.parse_args(request.form['text'].split(' '))
     except argparse.ArgumentError as err:
-        return err.user_messagex
+        return err.user_message
 
     calculator = Calculator(args.rate)
     calculator.query_data()
