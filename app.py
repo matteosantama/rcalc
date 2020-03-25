@@ -30,7 +30,7 @@ def receive_request():
     
     parser = ArgumentParser(
         description=("Short-term lending rate calculator. ") + 
-        ("Note that settlments are precise to 3 decimal places, but front month ") +
+        ("Note that final settlments are precise to 3 decimal places, but front month ") +
         ("futures are quoted to 4 decimal places. Hence, the offical vs. exact settlement values"), 
         prog='rcalc', add_help=False
     )
