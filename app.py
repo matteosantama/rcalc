@@ -73,8 +73,8 @@ def receive_request():
         response['rate needed'] = calculator.find_rate_with_price(args.target)
 
     # Heroku is configured to America/New York tz
-    if dt.datetime.now().time < dt.time(hour=12):
-        response['WARNING'] = 'Data release at 8am Central'
+    # if dt.datetime.now().time < dt.time(hour=12):
+    #     response['WARNING'] = 'Data release at 8am Central'
 
     return jsonify(response)
 
