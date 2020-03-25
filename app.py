@@ -40,15 +40,18 @@ def receive_request():
 
     # try to parse args, return failure string if unable to
     try:
-        args = parser.parse_args(request.form['text'].split(' '))
+        args, unknown = parser.parse_known_args(request.form['text'].split(' '))
     except argparse.ArgumentError as err:
         return err.user_message
+
+    if unknown:
+        return f'Unknown argument(s) passed {unknown}'
 
     calculator = Calculator(args.rate)
     calculator.query_data()
 
     if args.verbose:
-        return 'must return'
+        return calculator.df.to_csv()
     return f'current futures price={calculator.compute_futures_price()}'
 
 
