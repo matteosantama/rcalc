@@ -68,4 +68,4 @@ class Calculator:
 if __name__ == "__main__":
     calc = Calculator('zq')
     calc.query_data()
-    print(calc.df)
+    print(calc.df.to_string())
