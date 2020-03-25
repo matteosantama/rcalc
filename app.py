@@ -26,12 +26,12 @@ class ArgumentParser(argparse.ArgumentParser):
 
 @app.route('/slack/calculate', methods=['POST'])
 def receive_request():
-    print(1)
+    
     parser = ArgumentParser(
         description='Short-term lending rate calculator', prog='rcalc', add_help=False
     )
     group = parser.add_mutually_exclusive_group()
-    print(2)
+    
     parser.add_argument('symbol', 
         choices=['zq', 'sr1'], help='Specify whether to use zq or sr1'
     )
@@ -48,7 +48,7 @@ def receive_request():
         type=float, dest='target', 
         help='Determine the average rate we must see to achieve the target price ex). 99.8725'
     )
-    print(3)
+    
     # try to parse args, return failure string if unable to
     try:
         args = parser.parse_args(request.form['text'].split(' '))
@@ -58,13 +58,12 @@ def receive_request():
     # return help string if flag is present
     if args.help:
         return parser.format_help()
-    print(4)
+    
     calculator = Calculator(args.symbol)
-    calculator.query_data()
 
     if args.verbose:
         return '.' + calculator.df.to_string()
-    print(5)
+    
     response = dict()
     response['current futures price'] = calculator.compute_futures_price()
 
@@ -76,7 +75,7 @@ def receive_request():
     # Heroku is configured to America/New York tz
     if dt.datetime.now().time < dt.time(hour=12):
         response['WARNING'] = 'Data release at 8am Central'
-    print(6)
+
     return jsonify(response)
 
 
