@@ -35,17 +35,15 @@ class ArgumentParser(argparse.ArgumentParser):
 def receive_request():
     parser = ArgumentParser(description='Short-term lending rate calculator', prog='rcalc', add_help=False)
 
+    parser.add_argument('-h', '--help', action='store_true')
     parser.add_argument('rate', choices=['zq', 'sr1'], help='Specify whether to use zq or sr1')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', help='Use this flag to print rates dataframe')
 
     # try to parse args, return failure string if unable to
     try:
-        args, unknown = parser.parse_known_args(request.form['text'].split(' '))
+        args = parser.parse_args(request.form['text'].split(' '))
     except argparse.ArgumentError as err:
-        return err.user_message
-
-    if unknown:
-        return f'Unknown argument(s) passed {unknown}'
+        return err.user_messagex
 
     calculator = Calculator(args.rate)
     calculator.query_data()
