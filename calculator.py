@@ -95,7 +95,7 @@ class Calculator:
         decimal places, but futures are quoted to 4 decimals places.
         """
         places = 3 if offical else 4
-        settlement = 100 - round(avg_daily_rate, 3)
+        settlement = 100 - round(avg_daily_rate, places)
         return f'{settlement:.4f}'
 
 
