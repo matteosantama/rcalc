@@ -66,7 +66,7 @@ def receive_request():
         return '.' + calculator.df.to_string(justify='right')
     
     response = dict()
-    response['current futures price'] = calculator.compute_futures_price()
+    response['current settle'] = calculator.compute_futures_price()
 
     if args.rate:
         response['submitted rate'] = args.rate
