@@ -91,7 +91,8 @@ class Calculator:
     @staticmethod
     def _format_from_rate(avg_daily_rate, offical=True) -> str:
         """
-        round and format a futures price to 4 decimals
+        round and format a futures price. Offical final settlements are rounded to three
+        decimal places, but futures are quoted to 4 decimals places.
         """
         places = 3 if offical else 4
         settlement = 100 - round(avg_daily_rate, 3)
