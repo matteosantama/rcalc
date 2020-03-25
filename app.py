@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from slack import WebClient
 import os
 import argparse
@@ -76,7 +76,7 @@ def receive_request():
         response['rate needed'] = calculator.find_rate_with_price(args.target)
 
     # Heroku is configured to America/New York tz
-    if dt.datetime.now().time() < dt.time(hour=16):
+    if dt.datetime.now().time() < dt.time(hour=12):
         response['WARNING'] = 'Upcoming data release at 8am Central'
 
     return pformat(response)
