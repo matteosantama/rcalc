@@ -69,6 +69,7 @@ def receive_request():
         return '.' + calculator.df.to_string(justify='right')
     
     response = dict()
+    response['contract'] = args.symbol
     response['official_settle'] = calculator.compute_futures_price()
     response['exact_settle'] = calculator.compute_futures_price(official=False)
 
