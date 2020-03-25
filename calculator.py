@@ -18,16 +18,17 @@ class Calculator:
 
     def __init__(self, contract):
         self.contract = contract
-        self.df = None  # will get populated by self.query_data()
+        self.df = Calculator.construct_df(contract)
 
 
-    def query_data(self):
+    @staticmethod
+    def construct_df(contract):
         yesterday = dt.datetime.today() - dt.timedelta(days=1)
         week_into_prev_month = yesterday.replace(day=1) - dt.timedelta(days=7)
         datefmt = '%m%d%Y'
 
         # format endpoint given contract type and dates to query
-        endpoint = Calculator.ENDPOINTS[self.contract].format(
+        endpoint = Calculator.ENDPOINTS[contract].format(
             week_into_prev_month.strftime(datefmt),
             yesterday.strftime(datefmt)
         )
@@ -42,8 +43,8 @@ class Calculator:
             data[obs.attrib['TIME_PERIOD']] = float(obs.attrib['OBS_VALUE'])
 
         # construct df and fill missing days
-        df = pd.DataFrame.from_dict(data, orient='index', columns=[self.contract])
-        df.index = pd.DatetimeIndex(df.index).normalize()
+        df = pd.DataFrame.from_dict(data, orient='index', columns=[contract])
+        df.index = pd.DatetimeIndex(df.index).normalize() # normalize to midnight since timestamp isnt useful
         df = df.reindex(pd.date_range(
             start=yesterday.replace(day=1), 
             end=yesterday, 
@@ -52,20 +53,49 @@ class Calculator:
         df.index = df.index.normalize().rename('date')
 
         # compute rolling mean and implied futures price
-        df['rolling_mean'] = df[self.contract].expanding().mean()
+        df['rolling_mean'] = df[contract].expanding().mean()
         df['fut_price'] = 100 - df['rolling_mean']
 
-        # store dataframe as property for later access
-        self.df = df
+        return df
+
+    
+    def find_price_with_rate(self, rate: float) -> str:
+        """
+        These methods return properly formatted strings
+        """
+        first = self.df.index.min()
+        complete_idx = pd.date_range(start=first, periods=first.days_in_month, freq='D')
+        df = self.df[self.contract].reindex(index=complete_idx, fill_value=rate)
+        return Calculator._format(100 - df.mean())
+
+    
+    def find_rate_with_price(self, price: float) -> str:
+        """
+        These methods return properly formatted strings
+        """
+        dim = self.df.index.min().days_in_month
+        days_left = dim - len(self.df.index)
+
+        seen_sum = self.df[self.contract].sum()
+        end_rate = 100 - price
+
+        req_rate = ( (end_rate * dim) - seen_sum ) / days_left
+        return f'{req_rate:.5f}'
 
 
     def compute_futures_price(self) -> str:
-        price = 100 - self.df[self.contract].mean()
+        return Calculator._format(100 - self.df[self.contract].mean())
+
+    
+    @staticmethod
+    def _format(price) -> str:
+        """
+        round and format a futures price to 4 decimals
+        """
         base = 0.0025
         return f'{base * round(price / base):.4f}'
 
 
 if __name__ == "__main__":
     calc = Calculator('zq')
-    calc.query_data()
-    print(calc.df.to_string())
+    print(calc.df)
