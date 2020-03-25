@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from slack import WebClient
 import os
 import argparse
@@ -76,7 +76,7 @@ def receive_request():
     if dt.datetime.now().time < dt.time(hour=12):
         response['WARNING'] = 'Data release at 8am Central'
 
-    return response
+    return jsonify(response)
 
 
 # start the Flask server
