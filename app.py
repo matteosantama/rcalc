@@ -33,8 +33,9 @@ class ArgumentParser(argparse.ArgumentParser):
 
 @app.route('/slack/calculate', methods=['POST'])
 def receive_request():
-    parser = ArgumentParser(description='Short-term lending calculator', prog='rcalc')
+    parser = ArgumentParser(description='Short-term lending rate calculator', prog='rcalc', add_help=False)
 
+    parser.add_argument('-h', '--help', action='store_true', dest='help')
     parser.add_argument('rate', choices=['zq', 'sr1'], help='Specify whether to use zq or sr1')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', help='Use this flag to print rates dataframe')
 
@@ -44,6 +45,8 @@ def receive_request():
     except argparse.ArgumentError as err:
         return err.user_message
 
+    if args.help:
+        return parser.format_help()
     if unknown:
         return f'Unknown argument(s) passed {unknown}'
 
@@ -51,7 +54,7 @@ def receive_request():
     calculator.query_data()
 
     if args.verbose:
-        return calculator.df.to_csv()
+        return calculator.df.to_string()
     return f'current futures price={calculator.compute_futures_price()}'
 
 

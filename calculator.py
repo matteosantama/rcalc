@@ -43,11 +43,13 @@ class Calculator:
 
         # construct df and fill missing days
         df = pd.DataFrame.from_dict(data, orient='index', columns=[self.contract])
-        df.index = pd.DatetimeIndex(df.index)
+        df.index = pd.DatetimeIndex(df.index).normalize()
         df = df.reindex(pd.date_range(
             start=yesterday.replace(day=1), 
             end=yesterday, 
             freq='D'), method='bfill')
+        # get rid of time information and rename index as 'date'
+        df.index = df.index.normalize().rename('date')
 
         # compute rolling mean and implied futures price
         df['rolling_mean'] = df[self.contract].expanding().mean()
@@ -66,3 +68,4 @@ class Calculator:
 if __name__ == "__main__":
     calc = Calculator('zq')
     calc.query_data()
+    print(calc.df)
