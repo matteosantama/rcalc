@@ -45,9 +45,9 @@ def receive_request():
     group.add_argument('-r', '--rate', 
         type=float, dest='rate', help='Assign a rate to the remaining days'
         )
-    group.add_argument('-t', '--target', 
-        type=float, dest='target', 
-        help='Determine the average rate we must see to achieve the target price ex). 99.8725'
+    group.add_argument('-s', '--settle', 
+        type=float, dest='settle', 
+        help='Determine the average rate we must see to achieve the target settle ex). 99.8725'
     )
     
     # try to parse args, return failure string if unable to
@@ -71,12 +71,13 @@ def receive_request():
     if args.rate:
         response['submitted rate'] = args.rate
         response['price with rate'] = calculator.find_price_with_rate(args.rate)
-    if args.target:
-        response['submitted price'] = args.target
-        response['rate needed'] = calculator.find_rate_with_price(args.target)
+    if args.settle:
+        response['submitted price'] = args.settle
+        response['rate needed'] = calculator.find_rate_with_price(args.settle)
 
+    print(dt.datetime.now().time())
     # Heroku is configured to America/New York tz
-    if dt.datetime.now().time() < dt.time(hour=12):
+    if dt.datetime.now().time() < dt.time(hour=9):
         response['WARNING'] = 'Upcoming data release at 8am Central'
 
     return pformat(response)
