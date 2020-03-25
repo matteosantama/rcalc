@@ -66,7 +66,8 @@ class Calculator:
         first = self.df.index.min()
         complete_idx = pd.date_range(start=first, periods=first.days_in_month, freq='D')
         df = self.df[self.contract].reindex(index=complete_idx, fill_value=rate)
-        return Calculator._format(100 - df.mean())
+
+        return Calculator._format_from_rate(df.mean())
 
     
     def find_rate_with_price(self, price: float) -> str:
@@ -84,18 +85,19 @@ class Calculator:
 
 
     def compute_futures_price(self) -> str:
-        return Calculator._format(100 - self.df[self.contract].mean())
+        return Calculator._format_from_rate(self.df[self.contract].mean())
 
     
     @staticmethod
-    def _format(price) -> str:
+    def _format_from_rate(avg_daily_rate) -> str:
         """
         round and format a futures price to 4 decimals
         """
-        base = 0.0025
-        return f'{base * round(price / base):.4f}'
+        settlement = 100 - round(avg_daily_rate, 3)
+        return f'{settlement:.4f}'
 
 
 if __name__ == "__main__":
     calc = Calculator('zq')
     print(calc.df)
+    print(calc.compute_futures_price())

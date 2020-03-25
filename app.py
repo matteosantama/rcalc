@@ -75,7 +75,6 @@ def receive_request():
         response['submitted price'] = args.settle
         response['rate needed'] = calculator.find_rate_with_price(args.settle)
 
-    print(dt.datetime.now().time())
     # Heroku is configured to America/New York tz
     if dt.datetime.now().time() < dt.time(hour=9):
         response['WARNING'] = 'Upcoming data release at 8am Central'
