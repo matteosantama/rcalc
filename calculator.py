@@ -11,7 +11,7 @@ class Calculator:
     """
 
     ENDPOINTS = {
-        'sr1': 'https://websvcgatewayx2.frbny.org/mktrates_external_httponly/services/v1_0/mktRates/xml/retrieve?typ=RATE&f={}&t={}',
+        'sr1': 'https://websvcgatewayx2.frbny.org/mktrates_external_httponly/services/v1_0/mktRates/xml/retrieve?typ=RATE&f={}&t={}&rateType=R3',
         'zq': 'https://websvcgatewayx2.frbny.org/autorates_fedfunds_external/services/v1_0/fedfunds/xml/retrieve?typ=RATE&f={}&t={}'
     }
 
@@ -100,6 +100,6 @@ class Calculator:
 
 
 if __name__ == "__main__":
-    calc = Calculator('zq')
+    calc = Calculator('sr1')
     print(calc.df)
     print(calc.compute_futures_price())
